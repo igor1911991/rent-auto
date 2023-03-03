@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CAR PARK</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+          integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+</head>
+<body>
+
+<header class="d-flex bg-dark">
+    <a class="p-2 text-secondary text-right text-decoration-none" th:href="@{/logout}"> Logout </a>
+</header>
+
+<div class="row">
+
+    <div class="col-2 mt-3 p-0">
+        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+            <a class="nav-item nav-link active ml-2" th:href="@{/admin}">RETURN</a>
+        </div>
+    </div>
+
+    <div class="col-8 p-0">
+        <div class="tab-content bg-light p-2">
+            <div class="tab-pane fade show active pl-3" style="height: 700px;" id="user_panel"
+                 role="tabpanel" aria-labelledby="user_panel">
+                <!--                <h1>CAR PARK</h1>-->
+                <div class="pl-3 pt-1 d-flex border-top border-left border-right"><h4>Autos</h4></div>
+                <div class="bg-white border p-3">
+                    <table class="table table-striped border-top">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Model</th>
+                            <th>Power</th>
+                            <th>Speed</th>
+                            <th>Available</th>
+                            <th>orderNum</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="auto : ${listAuto}">
+                            <td th:utext="${auto.id}"></td>
+                            <td th:utext="${auto.model}"></td>
+                            <td th:utext="${auto.power}"></td>
+                            <td th:utext="${auto.speed}"></td>
+                            <td th:utext="(${auto.getAvailable()}? 'ДОСТУПЕН' : 'НЕ ДОСТУПЕН')"></td>
+                            <td th:utext="(${auto.getOrderNum()} != null ? ${auto.getOrderNum()} : '')"></td>
+                            <td>
+                                <form th:method="PATCH" th:action="@{/admin/car_park/change}">
+                                    <input type="hidden" th:value="${auto.id}" name="autoID"/>
+                                    <input type="submit" value="Block|Unlock"/>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div style="color:red" th:utext="${messageChangeStatusAutoException}">ChangeStatusAutoException</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-2 p-0">
+        <div class="pl-3 pt-1 d-flex border-top border-left border-right"><h4> ADD CAR</h4></div>
+        <div class="modal-body">
+            <form th:method="POST" th:action="@{/admin/car_park}" th:object="${newAuto}">
+
+                <br/>
+                <label for="model">Model: </label>
+                <input type="text" class="form-control" th:field="*{model}" id="model" value="model"/>
+                <div style="color:red" th:if="${#fields.hasErrors('model')}" th:errors="*{model}">Model Error</div>
+
+                <label for="power">Power: </label>
+                <input type="number" class="form-control" th:field="*{power}" id="power" value="power"/>
+                <div style="color:red" th:if="${#fields.hasErrors('power')}" th:errors="*{power}">Power Error</div>
+
+                <label for="speed">Speed: </label>
+                <input type="number" class="form-control" th:field="*{speed}" id="speed" value="speed"/>
+                <div style="color:red" th:if="${#fields.hasErrors('speed')}" th:errors="*{speed}">Speed Error</div>
+
+
+                <input type="hidden" th:value="true" name="available"/>
+                <input type="hidden" th:value="0" name="orderNum">
+                <br/>
+                <input type="submit" value="Add"/>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

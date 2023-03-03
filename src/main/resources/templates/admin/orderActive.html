@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ORDER ACTIVE</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+          integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+</head>
+<body>
+
+<header class="d-flex bg-dark">
+    <a class="p-2 text-secondary text-right text-decoration-none" th:href="@{/logout}"> Logout </a>
+</header>
+
+
+<div class="row">
+
+    <div class="col-2 mt-3 p-0">
+        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+            <a class="nav-item nav-link active ml-2" th:href="@{/admin}">RETURN</a>
+        </div>
+    </div>
+
+    <div class="col-10 p-0">
+        <div class="tab-content bg-light p-2">
+            <div class="tab-pane fade show active pl-3" style="height: 700px;" id="user_panel"
+                 role="tabpanel" aria-labelledby="user_panel">
+                <div class="pl-3 pt-1 d-flex border-top border-left border-right"><h4> Active orders</h4></div>
+                <div class="bg-white border p-3">
+                    <table class="table table-striped border-top">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Driver's license</th>
+                            <th>Username</th>
+                            <th>Phone number</th>
+                            <th>Car model</th>
+                            <th>Order timestamp</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order : ${orderList}">
+                            <td th:utext="${order.getId()}"></td>
+                            <td th:utext="${order.getUser().getDriversLicenseNumber()}"></td>
+                            <td th:utext="${order.getUser().getUsername()}"></td>
+                            <td th:utext="${order.getUser().getFormattedPhoneNumber()}"></td>
+                            <td th:utext="${order.getAuto().getModel()}"></td>
+                            <td th:utext="${#temporals.format(order.getOrderDate(), 'dd-MM-yyyy HH:mm')}"></td>
+                            <td>
+                                <form th:method="PATCH" th:action="@{/admin/active_orders/cancel}">
+                                    <input type="hidden" th:value="${order.getAuto().getId()}" name="autoID"/>
+                                    <input type="hidden" th:value="${order.getId()}" name="orderID"/>
+                                    <input type="submit" value="CANCEL"/>
+                                </form>
+                            </td>
+                            <td>
+                                <form th:method="PATCH" th:action="@{/admin/active_orders/complete}">
+                                    <input type="hidden" th:value="${order.getAuto().getId()}" name="autoID"/>
+                                    <input type="hidden" th:value="${order.getId()}" name="orderID"/>
+                                    <input type="submit" value="COMPLETE"/>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

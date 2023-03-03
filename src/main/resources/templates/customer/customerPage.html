@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer panel</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+</head>
+<body>
+
+<header class="d-flex bg-dark">
+
+  <div class="p-2 w-100 text-info font-weight-bold" th:utext="'CURRENT ORDER NUMBER: ' + (${currentOrderNumber}? ${currentOrderNumber} : 'no current orders')"></div>
+  <div class="p-2 w-100 text-danger font-weight-bold" th:utext="(${messageCreateOrderException}? ${messageCreateOrderException} : '')"></div>
+  <a class="p-2 text-secondary text-right text-decoration-none" th:href="@{/logout}"> Logout </a>
+</header>
+
+
+<table class="table table-striped border-top">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>MODEL</th>
+    <th>POWER</th>
+    <th>SPEED</th>
+    <th>RENT</th>
+  </tr>
+  </thead>
+
+  <tr th:each="auto : ${autos}">
+    <td th:utext="${auto.id}"></td>
+    <td th:utext="${auto.model}"></td>
+    <td th:utext="${auto.power}"></td>
+    <td th:utext="${auto.speed}"></td>
+    <td>
+      <form th:method="POST" th:action="@{/customer}" th:object="${auto}">
+
+        <input type="hidden" th:value="${auto.id}" name="id"/>
+        <input type="hidden" th:value="${auto.model}" name="model"/>
+        <input type="hidden" th:value="${auto.getPower()}" name="power"/>
+        <input type="hidden" th:value="${auto.getSpeed()}" name="speed"/>
+        <input type="hidden" th:value="false" name="available"/>
+
+        <input type="submit" value="RENT"/>
+      </form>
+    </td>
+  </tr>
+</table>
+
+<div class="p-2 w-100 text-warning font-weight-bold" th:utext="(${autos.size()} == 0? 'There are currently no available cars. Check back later' : '')"></div>
+
+</body>
+</html>
